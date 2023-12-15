@@ -41,14 +41,14 @@ def simulator():
 def realtime_temperature(sensor):
     db = dataset.connect(sets.DATABASE_URI)
     
-    if sensor not in db.tables:
-        db.close()
-        return jsonify({'error': f'Table "{sensor}" not found'})
+    #if sensor not in db.tables:
+    #    db.close()
+    #    return jsonify({'error': f'Table "{sensor}" not found'})
 
-    table = db[sensor]
-    result = table.find_one(order_by=['-1timestamp'])
-    db.close()
-    return jsonify(result)
+    #table = db[sensor]
+    #result = table.find_one(order_by=['-1timestamp'])
+    #db.close()
+    #return jsonify(result)
 
 
     #table = db['temperature']

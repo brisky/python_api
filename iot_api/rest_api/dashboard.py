@@ -31,7 +31,11 @@ def update_realtime(n):
     result = requests.get(sets.REALTIME_URL)
     print('Requesting realtime...')
     if result.status_code == 200:
-        temperature = result.json()["value"]
+        data = result.json()
+        timestamp = [datetime.datetime.strptime(row['timestamp'],
+                    "%Y-%m-%d %H:%M:S.%f") for row in data]
+        temperature = [row['value'] for row in data]
+        # temperature = result.json()["value"]
         return html.Span("Temperature: " + str(temperature))
 
 

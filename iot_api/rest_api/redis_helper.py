@@ -18,11 +18,12 @@ logger = logging.getLogger(__name__)
 
 def connect(host=sets.REDIS_HOST, port=6379):
     global Redis_host
-    logger.info(f'Connecting to redis://{host}:{port}')
-    try:
-        Redis_host = redis.Redis(host=host, port=port,
-                                 db=sets.REDIS_DB,
-                                 socket_timeout=3)
+    if Redis_host is None:
+        logger.info(f'Connecting to redis://{host}:{port}')
+        try:
+            Redis_host = redis.Redis(host=host, port=port,
+                                    db=sets.REDIS_DB,
+                                    socket_timeout=3)
 
     except redis.exceptions.TimeoutError as ex:
         logger.error(ex)

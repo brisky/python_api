@@ -4,7 +4,7 @@ import paho.mqtt.client as mqtt
 import dataset
 
 try:
-    from rest_api import redis_helper as raise
+    from rest_api import redis_helper as r
 except ModuleNotFoundError:
     import redis_helper as r
 
@@ -23,15 +23,14 @@ def on_message_callback(client, userdata, msg):
     topic = msg.topic.split('/')[-1]
     payload = float(msg.payload)
     msg_value ={'timestamp': datetime.now(), 'value': payload}
-    
+
     # redis
     r.put_data(topic, msg_value)
-
 
     # Database
     db = dataset.connect('sqlite:///sensors.sqlite3')
     table = db[topic] # create db table
-    table.insert({'timestamp': datetime.now(), 'value': payload})
+    table.insert(msg_value)
     db.close()
 
 
