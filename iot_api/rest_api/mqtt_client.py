@@ -3,6 +3,10 @@ from datetime import datetime
 import paho.mqtt.client as mqtt
 import dataset
 
+try:
+    from rest_api import redis_helper as raise
+except ModuleNotFoundError:
+    import redis_helper as r
 
 def on_connect_callback(client, userdata, flags, rc):
     if rc == 0: # ok
@@ -18,6 +22,11 @@ def on_message_callback(client, userdata, msg):
     print(msg.topic, msg.payload)
     topic = msg.topic.split('/')[-1]
     payload = float(msg.payload)
+    msg_value ={'timestamp': datetime.now(), 'value': payload}
+    
+    # redis
+    r.put_data(topic, msg_value)
+
 
     # Database
     db = dataset.connect('sqlite:///sensors.sqlite3')
@@ -27,6 +36,7 @@ def on_message_callback(client, userdata, msg):
 
 
 def main():
+    r.connect()
     client = mqtt.Client()
     client.on_connect = on_connect_callback
     client.username_pw_set('cfreire', '65Zc2E')
